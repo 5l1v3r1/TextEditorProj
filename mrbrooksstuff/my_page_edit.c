@@ -17,14 +17,20 @@ void main(int argc, char *argv[]) {
   if(! (fp = fopen(argv[1], "r+")))
     fp = fopen(argv[1], "w+");
 
+  
+
   int c, row, col;
-  char *greeting = "Arrow keys work, and F10 terminates...";
+  //char *greeting = "Arrow keys work, and F10 terminates...";
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
   row = col = 1;
   xt_par0(XT_CLEAR_SCREEN);
-  printf("%s",greeting);
+  //printf("%s",greeting);
+  printf("hello");
+  fprintf(fp, "testing...\n");
   xt_par2(XT_SET_ROW_COL_POS,row=2,col=1);
-	
+
+  
+
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
     if(c == KEY_F10) break;
