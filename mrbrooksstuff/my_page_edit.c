@@ -30,6 +30,7 @@ void main(int argc, char *argv[]) {
 
   FILE *fp;
   if (fp = fopen(argv[1], "r")){
+<<<<<<< HEAD
     int c;
     while (c = fgetc(fp)){
       printf("%c", c);
@@ -102,6 +103,8 @@ void main(int argc, char *argv[]) {
 	xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
       }
     }
+  }
+  //  xt_par0(XT_CLEAR_SCREEN);
 
   fclose(fp);
   getkey_terminate();
