@@ -25,7 +25,7 @@ void main(int argc, char *argv[]) {
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
 
   FILE *fp;
-  if (fp = fopen(argv[1], "r+")){
+  if (fp = fopen(argv[1], "r")){
     char line[80];
     while (fgets(line, 79, fp))
       printf("%s",line);
@@ -75,7 +75,7 @@ void main(int argc, char *argv[]) {
 	xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
     }
   }
-
+  xt_par0(XT_CLEAR_SCREEN);
   fclose(fp);
   getkey_terminate();
 }
