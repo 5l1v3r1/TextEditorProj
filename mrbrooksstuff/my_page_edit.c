@@ -25,16 +25,16 @@ void main(int argc, char *argv[]) {
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
 
   FILE *fp;
-  if (fp = fopen(argv[1], "r")){
+  if (fp = fopen(argv[1], "r+")){
     char line[80];
     while (fgets(line, 79, fp))
       printf("%s",line);
   }
-  else fp = fopen(argv[1], "w");
+  else fp = fopen(argv[1], "w+");
 
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
-    if(c == KEY_F2) break;
+    if(c == KEY_F1) break;
     else if (c == KEY_UP && row > 1) 
       xt_par2(XT_SET_ROW_COL_POS,--row,col);
     else if (c == KEY_DOWN && row < 22)
