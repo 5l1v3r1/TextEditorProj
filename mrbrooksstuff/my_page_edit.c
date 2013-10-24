@@ -18,7 +18,7 @@ void main(int argc, char *argv[]) {
 
   int c, row, col;
 
-  char *statement = "Active keys:  F1-exit  F2-save & exit   Arrow Keys  Backspace  Delete ";
+  char *statement = "Active keys:  F2-exit  F3-save & exit   Arrow Keys  Backspace  Delete ";
   xt_par2(XT_SET_ROW_COL_POS,row=23,col=1);
   xt_par0(XT_CLEAR_SCREEN);
   printf("%s",statement);
@@ -34,7 +34,7 @@ void main(int argc, char *argv[]) {
 
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
-    if(c == KEY_F1) break;
+    if(c == KEY_F2) break;
     else if (c == KEY_UP && row > 1) 
       xt_par2(XT_SET_ROW_COL_POS,--row,col);
     else if (c == KEY_DOWN && row < 22)
