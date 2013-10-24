@@ -13,27 +13,28 @@ void main(int argc, char *argv[]) {
     return;
   }
 
-  FILE *fp;
-  if(! (fp = fopen(argv[1], "r+")))
-    fp = fopen(argv[1], "w+");
 
   
 
   int c, row, col;
-  //char *greeting = "Arrow keys work, and F10 terminates...";
-  xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
-  row = col = 1;
-  xt_par0(XT_CLEAR_SCREEN);
-  //printf("%s",greeting);
-  printf("hello");
-  fprintf(fp, "testing...\n");
-  xt_par2(XT_SET_ROW_COL_POS,row=2,col=1);
 
-  
+  char *statement = "Active keys:  F1-exit  F2-save & exit   Arrow Keys  Backspace  Delete ";
+  xt_par2(XT_SET_ROW_COL_POS,row=23,col=1);
+  xt_par0(XT_CLEAR_SCREEN);
+  printf("%s",statement);
+  xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
+
+  FILE *fp;
+  if (fp = fopen(argv[1], "r")){
+    char line[80];
+    while (fgets(line, 79, fp))
+      printf("%s",line);
+  }
+  else fp = fopen(argv[1], "w");
 
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
-    if(c == KEY_F10) break;
+    if(c == KEY_F2) break;
     else if (c == KEY_UP && row > 1) 
       xt_par2(XT_SET_ROW_COL_POS,--row,col);
     else if (c == KEY_DOWN && row < 22)
