@@ -28,7 +28,7 @@ void main(int argc, char *argv[]) {
   printf("%s",statement);
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
 
-  int data[21][80];
+  int data[22][81];
 
   FILE *fp;
   if (fp = fopen(argv[1], "r")){
