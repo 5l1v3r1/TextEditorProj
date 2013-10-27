@@ -17,10 +17,10 @@ void main(int argc, char *argv[]) {
 
   int c, row, col;
   
-  int charsperline[22];
+  int cpl[22];  // chars per line
   int i;
   for (i = 0; i < 22; i++)
-    charsperline[i] = 0;
+    cpl[i] = 0;
   
   char *statement = "Active keys:  F2-exit  F3-save & exit   Arrow Keys  Backspace  Delete ";
   xt_par2(XT_SET_ROW_COL_POS,row=23,col=1);
@@ -28,20 +28,53 @@ void main(int argc, char *argv[]) {
   printf("%s",statement);
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
 
+  int data[21][80];
+
   FILE *fp;
   if (fp = fopen(argv[1], "r")){
+    /*
     int c;
     while (fgetc(fp) != EOF){
       c = fgetc(fp);
       printf("%c", c);
       if (c == '\n')
 	row ++;
-      else(charsperline[row-1]++);
+      else(cpl[row-1]++);
       if (row > 22)
 	break;
+	}
+    */
+    int a,b,d;
+    a = b = 0;
+    while((d = fgetc(fp)) != EOF){
+      if(a = 22)
+	break;
+      data[a][b++] = d;
+      if(d == '\n'){
+	++a;
+	b = 0;
+      }
+      if(b == 80){
+	data[a++][b] = '\n';
+	b = 0;
+      }
+    }
+
+    a = b = 0;
+    while(a < 22 || b < 80){
+      if(b == 80 || data[a][b] == '\n'){
+	//putchar('\n');
+	xt_par2(XT_SET_ROW_COL_POS,row=(a+2),col=1);
+	b = 0;
+	++a;
+      } else
+	//putchar((char)(data[a][b++]));
+	putchar(data[a][b++]);
     }
   }
   else fp = fopen(argv[1], "w");
+
+  xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
 
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
@@ -53,62 +86,71 @@ void main(int argc, char *argv[]) {
 
     else if (c == KEY_UP && row > 1){
       xt_par2(XT_SET_ROW_COL_POS,--row,col);
-      if (charsperline[row-1] < col){
-	col = charsperline[row-1] + 1;
+      if (cpl[row-1] < col){
+	col = cpl[row-1] + 1;
 	xt_par2(XT_SET_ROW_COL_POS, row, col);
       }
     }
     
 
     else if (c == KEY_DOWN && row < 22){
-      if (charsperline[row] != 0){
+      if (cpl[row] != 0){
 	xt_par2(XT_SET_ROW_COL_POS,++row,col);
-	if (charsperline[row-1] < col){
-	  col = charsperline[row-1] + 1;
+	if (cpl[row-1] < col){
+	  col = cpl[row-1] + 1;
 	  xt_par2(XT_SET_ROW_COL_POS, row, col);
 	}
       }
     }
 
     else if (c == KEY_RIGHT && col < 80){
-      if (charsperline[row-1] >= col)
+      if (cpl[row-1] >= col)
 	xt_par2(XT_SET_ROW_COL_POS,row,++col);
     }
 
     else if (c == KEY_LEFT){
       if (col > 1)
 	xt_par2(XT_SET_ROW_COL_POS,row,--col);
-      else{
-	col = charsperline[row-2] + 1;
+      else if(row > 1){
+	col = cpl[row-2] + 1;
 	xt_par2(XT_SET_ROW_COL_POS, --row, col);
       }
     }
  
     else if (c == KEY_ENTER){
-      xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
+      if(row < 22)
+	xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
     }
     else if (c == KEY_DELETE){
       putchar(' ');
       xt_par2(XT_SET_ROW_COL_POS,row,col);
+      if(cpl[row-1] == (col-1))
+	cpl[row-1]--;
     }
     else if (c == KEY_BACKSPACE){
-      //putchar(' ');
+
+      if (cpl[row-1] == (col-1))
+      cpl[row-1]--;
+
+      //cursor is not on first column
       if (col > 1){
-	if (charsperline[row-1] == (col-1))
-	    charsperline[row-1]--;
+	//if (cpl[row-1] == (col-1))
+	//    cpl[row-1]--;
 	xt_par2(XT_SET_ROW_COL_POS,row,--col);
 	putchar(' ');
 	xt_par2(XT_SET_ROW_COL_POS,row,col);
       }
+      //cursor is not on first row and is on first column
       else if(row > 1) {
-	charsperline[row-1] = 0;
-	xt_par2(XT_SET_ROW_COL_POS,--row,col=80);
+	//cpl[row-1] = 0;
+	xt_par2(XT_SET_ROW_COL_POS,--row,col=(cpl[row-2]+1));
 	putchar(' ');
 	xt_par2(XT_SET_ROW_COL_POS,row,col);
       }
+      //cursor is on first row and on first column
       else{
 	row = col = 1;
-	charsperline[row-1] = 0;
+	//cpl[row-1] = 0;
 	putchar(' ');
 	xt_par2(XT_SET_ROW_COL_POS,row,col);//col = linelength[row]
       }
@@ -117,12 +159,14 @@ void main(int argc, char *argv[]) {
       putchar(c);
       if (col < 80){
 	++col;
-	charsperline[row-1]++;
+	cpl[row-1]++;
       }
-      else{
-	charsperline[row-1] = 80;
+      else if(row < 22){
+	cpl[row-1] = 80;
 	xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
       }
+      else
+	xt_par2(XT_SET_ROW_COL_POS,row,col);
     }
   }
   //  xt_par0(XT_CLEAR_SCREEN);
