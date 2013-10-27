@@ -30,42 +30,63 @@ void main(int argc, char *argv[]) {
 
   FILE *fp;
   if (fp = fopen(argv[1], "r")){
-<<<<<<< HEAD
     int c;
-    while (c = fgetc(fp)){
+    while (fgetc(fp) != EOF){
+      c = fgetc(fp);
       printf("%c", c);
       if (c == '\n')
 	row ++;
       else(charsperline[row-1]++);
       if (row > 22)
 	break;
+    }
   }
-
   else fp = fopen(argv[1], "w");
 
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
     if(c == KEY_F2) break;
     else if(c == KEY_F3){
-      writefile();
+      writefile(argv[1]);
       break;
     }
-    //mod for line suppression
-    else if (c == KEY_UP && row > 1) 
+
+    else if (c == KEY_UP && row > 1){
       xt_par2(XT_SET_ROW_COL_POS,--row,col);
+      if (charsperline[row-1] < col){
+	col = charsperline[row-1] + 1;
+	xt_par2(XT_SET_ROW_COL_POS, row, col);
+      }
+    }
+    
 
-    //mod for line suppression
-    else if (c == KEY_DOWN && row < 22)
-      xt_par2(XT_SET_ROW_COL_POS,++row,col);
+    else if (c == KEY_DOWN && row < 22){
+      if (charsperline[row] != 0){
+	xt_par2(XT_SET_ROW_COL_POS,++row,col);
+	if (charsperline[row-1] < col){
+	  col = charsperline[row-1] + 1;
+	  xt_par2(XT_SET_ROW_COL_POS, row, col);
+	}
+      }
+    }
 
-    //mod for line suppression
-    else if (c == KEY_RIGHT && col < 80)
-      xt_par2(XT_SET_ROW_COL_POS,row,++col);
+    else if (c == KEY_RIGHT && col < 80){
+      if (charsperline[row-1] >= col)
+	xt_par2(XT_SET_ROW_COL_POS,row,++col);
+    }
 
-    else if (c == KEY_LEFT && col > 1)
-      xt_par2(XT_SET_ROW_COL_POS,row,--col);
-    else if (c == KEY_ENTER) 
+    else if (c == KEY_LEFT){
+      if (col > 1)
+	xt_par2(XT_SET_ROW_COL_POS,row,--col);
+      else{
+	col = charsperline[row-2] + 1;
+	xt_par2(XT_SET_ROW_COL_POS, --row, col);
+      }
+    }
+ 
+    else if (c == KEY_ENTER){
       xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
+    }
     else if (c == KEY_DELETE){
       putchar(' ');
       xt_par2(XT_SET_ROW_COL_POS,row,col);
@@ -73,21 +94,21 @@ void main(int argc, char *argv[]) {
     else if (c == KEY_BACKSPACE){
       //putchar(' ');
       if (col > 1){
-	if (charsperline[row] == (col-1))
-	    charsperline[row]--;
+	if (charsperline[row-1] == (col-1))
+	    charsperline[row-1]--;
 	xt_par2(XT_SET_ROW_COL_POS,row,--col);
 	putchar(' ');
 	xt_par2(XT_SET_ROW_COL_POS,row,col);
       }
       else if(row > 1) {
-	charsperline[row] = 0;
+	charsperline[row-1] = 0;
 	xt_par2(XT_SET_ROW_COL_POS,--row,col=80);
 	putchar(' ');
 	xt_par2(XT_SET_ROW_COL_POS,row,col);
       }
       else{
 	row = col = 1;
-	charsperline[row] = 0;
+	charsperline[row-1] = 0;
 	putchar(' ');
 	xt_par2(XT_SET_ROW_COL_POS,row,col);//col = linelength[row]
       }
@@ -96,10 +117,10 @@ void main(int argc, char *argv[]) {
       putchar(c);
       if (col < 80){
 	++col;
-	charsperline[row]++;
+	charsperline[row-1]++;
       }
       else{
-	charsperline[row] = 80;
+	charsperline[row-1] = 80;
 	xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
       }
     }
@@ -110,8 +131,8 @@ void main(int argc, char *argv[]) {
   getkey_terminate();
 }
 
-void writefile(){
-  FILE *fp = fopen(argv[1], "w");
+void writefile(char* filename){
+  FILE *fp = fopen(filename, "w");
   int row, col;
   row = col = 1;
   xt_par2(XT_SET_ROW_COL_POS, row, col); 
