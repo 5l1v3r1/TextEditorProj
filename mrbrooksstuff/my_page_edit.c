@@ -44,8 +44,20 @@ void main(int argc, char *argv[]) {
 	break;
 	}
     */
+	
     int a,b,d;
     a = b = 0;
+    char line[81];
+    while(fgets(line, 80, fp)){
+      printf("%s", line);
+      d = line;
+      while(d){
+	data[a][b++] = d;
+	++d;
+      }
+      ++a;
+    }
+    /*
     while((d = fgetc(fp)) != EOF){
       if(a = 22)
 	break;
@@ -59,7 +71,7 @@ void main(int argc, char *argv[]) {
 	b = 0;
       }
     }
-
+    
     a = b = 0;
     while(a < 22 || b < 80){
       if(b == 80 || data[a][b] == '\n'){
@@ -71,7 +83,9 @@ void main(int argc, char *argv[]) {
 	//putchar((char)(data[a][b++]));
 	putchar(data[a][b++]);
     }
+    */
   }
+
   else fp = fopen(argv[1], "w");
 
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
