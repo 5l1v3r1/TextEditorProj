@@ -103,9 +103,22 @@ void main(int argc, char *argv[]) {
 
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
-    if(c == KEY_F2) break;
+    if(c == KEY_F2)      break;
     else if(c == KEY_F3){
-      writefile(argv[1]);
+      fclose(fp);
+
+      //saving file
+      fp = fopen(argv[1], "w");
+      int a,b;
+      a = b = 0;
+      while(fputc(data[a][b], fp)){
+	if(data[a][b++] == '\n'){
+	  b = 0;
+	  ++a;
+	}
+      }
+
+      //printf("\n");
       break;
     }
 
@@ -149,6 +162,7 @@ void main(int argc, char *argv[]) {
 
     else if (c == KEY_ENTER){
       putchar('\n');
+      data[row-1][col-1] = '\n';
       if (cpl[row-1] == 0)
 	  cpl[row-1]++;
       if(row < 22)
@@ -156,6 +170,7 @@ void main(int argc, char *argv[]) {
     }
     else if (c == KEY_DELETE){
       putchar(' ');
+      data[row-1][col-1] = ' ';
       xt_par2(XT_SET_ROW_COL_POS,row,col);
       if(cpl[row-1] == (col-1))
 	cpl[row-1]--;
@@ -190,6 +205,7 @@ void main(int argc, char *argv[]) {
     }
     else if (c >= ' ' && c <= '~') {
       putchar(c);
+      data[row-1][col-1] = c;
       if (col < 80){
 	++col;
 	cpl[row-1]++;
@@ -206,13 +222,17 @@ void main(int argc, char *argv[]) {
 
   fclose(fp);
   getkey_terminate();
-}
 
-void writefile(char* filename){
+
+  xt_par0(XT_CLEAR_SCREEN); 
+  xt_par0(XT_CLEAR_SCREEN);
+}
+/*
+void writefile(char* filename, int data[][]){
   FILE *fp = fopen(filename, "w");
   int row, col;
   row = col = 1;
   xt_par2(XT_SET_ROW_COL_POS, row, col); 
   //mechanism to read everything from the editor into the file...
 }
-  
+*/
