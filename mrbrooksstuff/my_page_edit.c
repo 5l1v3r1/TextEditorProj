@@ -29,7 +29,7 @@ void main(int argc, char *argv[]) {
   printf("%s",statement);
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
 
-  int data[22][81];
+  int data[22][81] = {[0 ... 21][0] = '\0'};
 
   FILE *fp;
   if (fp = fopen(argv[1], "r")){
@@ -109,9 +109,12 @@ void main(int argc, char *argv[]) {
 
       //saving file
       fp = fopen(argv[1], "w");
-      int a,b;
+      int a,b, d;
       a = b = 0;
-      while(fputc(data[a][b], fp)){
+      while(d = data[a][b]){
+	if(d == '\0')
+	  break;
+	fputc(data[a][b], fp);
 	if(data[a][b++] == '\n'){
 	  b = 0;
 	  ++a;
