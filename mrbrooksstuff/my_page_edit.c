@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "keyboard.h"
 #include "xterm_control.h"
@@ -50,12 +51,22 @@ void main(int argc, char *argv[]) {
     char line[81];
     while(fgets(line, 80, fp)){
       printf("%s", line);
-      d = line;
-      while(d){
-	data[a][b++] = d;
-	++d;
+      // d = line;
+      //   while(d){
+      //	data[a][b++] = d;
+      //	++d;
+      //      }
+      int i;
+      if (strlen(line) == 1)
+	cpl[a]++;
+      for (i = 0; i < strlen(line); i++){
+	data[a][b++] = line[i];
+	cpl[a]++;
       }
-      ++a;
+      cpl[a]--;
+      a++;
+      if (a == 22)
+	break;
     }
     /*
     while((d = fgetc(fp)) != EOF){
@@ -120,8 +131,12 @@ void main(int argc, char *argv[]) {
     else if (c == KEY_RIGHT && col < 80){
       if (cpl[row-1] >= col)
 	xt_par2(XT_SET_ROW_COL_POS,row,++col);
+      else if (row < 22 && cpl[row] > 0){
+	col = 1;
+	xt_par2(XT_SET_ROW_COL_POS, ++row, col);
+      }
     }
-
+      
     else if (c == KEY_LEFT){
       if (col > 1)
 	xt_par2(XT_SET_ROW_COL_POS,row,--col);
@@ -131,7 +146,11 @@ void main(int argc, char *argv[]) {
       }
     }
  
+
     else if (c == KEY_ENTER){
+      putchar('\n');
+      if (cpl[row-1] == 0)
+	  cpl[row-1]++;
       if(row < 22)
 	xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
     }
