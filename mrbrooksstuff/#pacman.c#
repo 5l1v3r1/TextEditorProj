@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void main(int argc, char *argv[]){
+  //set up board
+  FILE *fp;
+  fp = fopen("pacmanboard.txt", "r");
+  char line[82];
+  while (fgets(line,82,fp))
+    printf("%s",line);
+
+  int row, col;
+  row = col = 0;
+  xt_par2(XT_SET_R
