@@ -83,11 +83,12 @@ void main(int argc, char *argv[]) {
       //      printf("HERE\n");
       //      printDataMatrix(data);
       for (i = 0; i < 22; i++){
-	if (cpl[i] > 0){
+	//	if (cpl[i] > 0){
 	  data[i][(cpl[i])] = '\n';
 	  data[i][(cpl[i])+1] = '\0';
 	  fprintf(fp, "%s", data[i]);
-	}
+	  //	}
+	//	else{
       }
 	  //      while(fputs(data[a], fp)){
       //      for (a = 0; a < 22; a++){
