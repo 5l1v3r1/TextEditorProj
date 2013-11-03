@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "keyboard.h"
@@ -6,7 +7,12 @@
 
 #define CONTROL_C        3
 
-//void writefile();
+void printDataMatrix(char data[22][82]){
+  int i = 0;
+  for (i; i < 22; i++){
+    printf("%s", data[i]);
+  }
+}
 
 void main(int argc, char *argv[]) {
   
@@ -29,53 +35,66 @@ void main(int argc, char *argv[]) {
   printf("%s",statement);
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
 
-  int data[22][81];
+  char data[22][82];
 
   FILE *fp;
   if (fp = fopen(argv[1], "r")){
         
-    int a,b,d;
-    a = b = 0;
-    char line[81];
-    while(fgets(line, 81, fp)){
+    int a = 0;
+    char line[82];
+    //    line = (char *)malloc(82);
+    while(fgets(line, 82, fp)){
       printf("%s", line);
       int i;
-      if (strlen(line) == 1)
-        cpl[a]++;
+      //      if (strlen(line) == 1)
+	//        cpl[a]++;
       //for (i = 0; i < strlen(line); i++){
       //data[a][b++] = line[i];
-      data[a] = line;
-	cpl[a] = strlen(line);
+      //line = (char *)malloc(82)
+      strcpy(data[a], line);
+      cpl[a] = strlen(line);
+      if (line[strlen(line)] == '\n'){
+	line[strlen(line)] = '\0';
+	cpl[a]--;
       }
-      cpl[a]--;
       a++;
-      if (a == 22)
+      if (a >= 22)
         break;
     }
   }
-
-  else fp = fopen(argv[1], "w");
-
+  
+  else{
+    fp = fopen(argv[1], "w");
+  }
+  
   xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
 
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
     if(c == KEY_F2)      break;
-    else if(c == KEY_F3){
+    else if(c == KEY_LEFT){
       fclose(fp);
 
       //saving file
-            fp = fopen(argv[1], "w");
+      fp = fopen(argv[1], "w");
       //fp = fopen("", "w");
-      int a,b;
-      a = b = 0;
-      while(fputc(data[a][b], fp)){
-        if(data[a][b++] == '\n'){
-          b = 0;
-          ++a;
-        }
+      int a,i;
+      a = 0;
+      printf("HERE\n");
+      printDataMatrix(data);
+      for (i = 0; i < 22; i++){
+	if (cpl[i] > 0){
+	  data[a][(cpl[a]) + 1] = '\n';
+	  data[a][(cpl[a]) + 2] = '\0';
+	  fputs(data[a], fp);
+	  fputc('\0');
+	}
       }
-
+      //      while(fputs(data[a], fp)){
+      //      for (a = 0; a < 22; a++){
+      //	if (cpl[i]
+      // ++a;
+      //      }
       break;
     }
 
@@ -121,8 +140,8 @@ void main(int argc, char *argv[]) {
 
       if(row < 22){
 	//putchar('\n');
-	if(col-1 == cpl[row-1])
-	  data[row-1][col-1] = '\n';
+	//	if(col-1 == cpl[row-1])
+	//	  data[row-1][col-1] = '\n';
         xt_par2(XT_SET_ROW_COL_POS,++row,col=1);
 	if (cpl[row-2] == 0)
 	  cpl[row-2]++;
@@ -183,3 +202,4 @@ void main(int argc, char *argv[]) {
   xt_par0(XT_CLEAR_SCREEN); 
   xt_par0(XT_CLEAR_SCREEN);
 }
+
