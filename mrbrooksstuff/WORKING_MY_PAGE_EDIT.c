@@ -72,7 +72,7 @@ void main(int argc, char *argv[]) {
   while (1) {
     while ((c = getkey()) == KEY_NOTHING) ;
     if(c == KEY_F2)      break;
-    else if(c == KEY_LEFT){
+    else if(c == KEY_F3){
       //      fclose(fp);
 
       //saving file
