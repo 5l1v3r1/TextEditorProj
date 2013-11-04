@@ -49,8 +49,7 @@ void setUpBoard(){
       break;
   }
   fclose(fp);
-  xt_par2(XT_SET_ROW_COL_POS, row=36, col=10);
-  putchar('<');
+  xt_par2(XT_SET_ROW_COL_POS, row=19, col=12);
 }
 
 void play(){
